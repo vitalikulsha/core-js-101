@@ -23,9 +23,7 @@
 function Rectangle(width, height) {
   this.width = width;
   this.height = height;
-  this.getArea = function () {
-    return this.width * this.height;
-  };
+  this.getArea = () => this.width * this.height;
 }
 
 
@@ -120,37 +118,49 @@ const cssSelectorBuilder = {
   cssSelector: '',
 
   element(value) {
+    this.error(1);
     const obj = Object.create(cssSelectorBuilder);
+    obj.index = 1;
     obj.cssSelector = this.cssSelector.concat(value);
     return obj;
   },
 
   id(value) {
+    this.error(2);
     const obj = Object.create(cssSelectorBuilder);
+    obj.index = 2;
     obj.cssSelector = this.cssSelector.concat('#', value);
     return obj;
   },
 
   class(value) {
+    this.error(3);
     const obj = Object.create(cssSelectorBuilder);
+    obj.index = 3;
     obj.cssSelector = this.cssSelector.concat('.', value);
     return obj;
   },
 
   attr(value) {
+    this.error(4);
     const obj = Object.create(cssSelectorBuilder);
+    obj.index = 4;
     obj.cssSelector = this.cssSelector.concat('[', value, ']');
     return obj;
   },
 
   pseudoClass(value) {
+    this.error(5);
     const obj = Object.create(cssSelectorBuilder);
+    obj.index = 5;
     obj.cssSelector = this.cssSelector.concat(':', value);
     return obj;
   },
 
   pseudoElement(value) {
+    this.error(6);
     const obj = Object.create(cssSelectorBuilder);
+    obj.index = 6;
     obj.cssSelector = this.cssSelector.concat('::', value);
     return obj;
   },
@@ -163,6 +173,11 @@ const cssSelectorBuilder = {
 
   stringify() {
     return this.cssSelector;
+  },
+
+  error(i) {
+    if (this.index > i) throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    if (this.index === i && (i === 1 || i === 2 || i === 6)) throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
   },
 };
 
