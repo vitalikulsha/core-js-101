@@ -108,18 +108,19 @@ function memoize(func) {
  * retryer() => 2
  */
 function retry(func, attempts) {
-  let count = 0;
+  let count = attempts;
   return () => {
-    while (true) {
+    while (count) {
       try {
-        count += 1;
+        count -= 1;
         return func();
       } catch (e) {
-        if (count >= attempts) {
+        if (count <= 0) {
           return e;
         }
       }
     }
+    return func();
   };
 }
 
